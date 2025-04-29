@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Seletor de Rede Neural</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- CSS externo opcional -->
+</head>
+<body class="font-sans bg-gray-50 min-h-screen">
+    <div class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Configurador de Rede Neural</h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto">Selecione o tipo de rede neural e defina as características para análise</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-4 py-12 max-w-4xl">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Selecione o Tipo de Rede Neural</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Opção RGB -->
+                <div class="feature-card">
+                    <input type="radio" name="neuralType" id="rgbNeural" value="rgb" class="hidden peer" checked>
+                    <label for="rgbNeural" class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-border-all text-purple-600"></i>
+                            </div>
+                            <h3 class="text-xl font-medium text-gray-800">Rede Neural com Extração por Pixel (RGB)</h3>
+                        </div>
+                        <p class="text-gray-600">Análise baseada em valores RGB de cada pixel da imagem</p>
+                    </label>
+                </div>
+
+                <!-- Opção CNN -->
+                <div class="feature-card">
+                    <input type="radio" name="neuralType" id="cnnNeural" value="cnn" class="hidden peer">
+                    <label for="cnnNeural" class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-project-diagram text-purple-600"></i>
+                            </div>
+                            <h3 class="text-xl font-medium text-gray-800">Rede Neural Convolucional (CNN)</h3>
+                        </div>
+                        <p class="text-gray-600">Análise baseada em características hierárquicas aprendidas automaticamente</p>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Configurar Características</h2>
+                <button id="addFeatureBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+                    <i class="fas fa-plus mr-2"></i> Adicionar
+                </button>
+            </div>
+
+            <div id="featuresContainer" class="space-y-4">
+                <!-- Características serão adicionadas aqui dinamicamente -->
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                    Processar Rede Neural
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addFeatureBtn = document.getElementById('addFeatureBtn');
+            const featuresContainer = document.getElementById('featuresContainer');
+
+            function rgbToHex(r, g, b) {
+                return "#" + [r, g, b].map(x => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? "0" + hex : hex;
+                }).join("");
+            }
+
+            function createFeatureElement() {
+                const feature = document.createElement('div');
+                feature.className = 'feature-item border border-gray-200 rounded-lg p-4';
+                const randomColor = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+                const [r, g, b] = [
+                    parseInt(randomColor.substring(0, 2), 16),
+                    parseInt(randomColor.substring(2, 4), 16),
+                    parseInt(randomColor.substring(4, 6), 16)
+                ];
+                feature.innerHTML = `
+                    <div class="grid md:grid-cols-12 gap-4 items-center">
+                        <div class="md:col-span-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Característica</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor dominante">
+                        </div>
+                        <div class="md:col-span-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cor RGB</label>
+                            <div class="flex items-center">
+                                <input type="color" value="#${randomColor}" class="color-input mr-3">
+                                <input type="text" value="${r}, ${g}, ${b}" class="rgb-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 flex justify-end">
+                            <button class="remove-feature text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                feature.querySelector('.remove-feature').addEventListener('click', () => feature.remove());
+
+                const colorInput = feature.querySelector('.color-input');
+                const rgbInput = feature.querySelector('.rgb-input');
+
+                colorInput.addEventListener('input', () => {
+                    const hex = colorInput.value;
+                    const r = parseInt(hex.substr(1, 2), 16);
+                    const g = parseInt(hex.substr(3, 2), 16);
+                    const b = parseInt(hex.substr(5, 2), 16);
+                    rgbInput.value = `${r}, ${g}, ${b}`;
+                });
+
+                rgbInput.addEventListener('change', () => {
+                    const rgb = rgbInput.value.split(',').map(v => parseInt(v.trim()));
+                    if (rgb.length === 3 && rgb.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
+                        colorInput.value = rgbToHex(...rgb);
+                    }
+                });
+
+                return feature;
+            }
+
+            addFeatureBtn.addEventListener('click', () => {
+                featuresContainer.appendChild(createFeatureElement());
+            });
+
+            // Adiciona um inicial
+            featuresContainer.appendChild(createFeatureElement());
+        });
+    </script>
+</body>
+</html>
