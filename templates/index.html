@@ -1,12 +1,61 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seletor de Rede Neural</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css"> <!-- CSS externo opcional -->
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+        }
+        .dropzone {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+        .dropzone.active {
+            border-color: #8b5cf6;
+            background-color: #f5f3ff;
+        }
+        .preview-image {
+            object-fit: cover;
+            height: 100px;
+            width: 100px;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        .auth-modal {
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .auth-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
 </head>
 <body class="font-sans bg-gray-50 min-h-screen">
     <div class="gradient-bg text-white py-12">
@@ -19,8 +68,9 @@
     <main class="container mx-auto px-4 py-12 max-w-4xl">
         <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
             <h2 class="text-2xl font-semibold mb-6 text-gray-800">Selecione o Tipo de Rede Neural</h2>
+            
             <div class="grid md:grid-cols-2 gap-6">
-                <!-- Opção RGB -->
+                <!-- Opção 1 -->
                 <div class="feature-card">
                     <input type="radio" name="neuralType" id="rgbNeural" value="rgb" class="hidden peer" checked>
                     <label for="rgbNeural" class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all">
@@ -33,8 +83,8 @@
                         <p class="text-gray-600">Análise baseada em valores RGB de cada pixel da imagem</p>
                     </label>
                 </div>
-
-                <!-- Opção CNN -->
+                
+                <!-- Opção 2 -->
                 <div class="feature-card">
                     <input type="radio" name="neuralType" id="cnnNeural" value="cnn" class="hidden peer">
                     <label for="cnnNeural" class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all">
@@ -50,6 +100,48 @@
             </div>
         </div>
 
+        <!-- Seção de Upload de Imagens -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Adicionar Imagens para Análise</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Upload do Computador -->
+                <div class="dropzone p-6 rounded-lg text-center" id="fileDropzone">
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-purple-500 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-800 mb-2">Arraste e solte imagens aqui</h3>
+                        <p class="text-gray-500 mb-4">ou</p>
+                        <label for="fileInput" class="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                            <i class="fas fa-folder-open mr-2"></i> Selecione do computador
+                        </label>
+                        <input type="file" id="fileInput" class="hidden" accept="image/*" multiple>
+                    </div>
+                </div>
+                
+                <!-- Conexão com Google Drive -->
+                <div class="border-2 border-gray-200 rounded-lg p-6 text-center">
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <i class="fab fa-google-drive text-4xl text-blue-500 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-800 mb-2">Importar do Google Drive</h3>
+                        <button id="connectDriveBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                            <i class="fab fa-google-drive mr-2"></i> Conectar ao Drive
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pré-visualização das imagens -->
+            <div class="mt-8">
+                <h3 class="text-lg font-medium text-gray-800 mb-4">Imagens selecionadas</h3>
+                <div id="imagePreviewContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <div class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                        <p>Nenhuma imagem selecionada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuração de características -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-semibold text-gray-800">Configurar Características</h2>
@@ -60,6 +152,26 @@
 
             <div id="featuresContainer" class="space-y-4">
                 <!-- Características serão adicionadas aqui dinamicamente -->
+                <div class="feature-item border border-gray-200 rounded-lg p-4">
+                    <div class="grid md:grid-cols-12 gap-4 items-center">
+                        <div class="md:col-span-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Característica</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor principal">
+                        </div>
+                        <div class="md:col-span-5">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cor RGB</label>
+                            <div class="flex items-center">
+                                <input type="color" value="#ff0000" class="mr-3">
+                                <input type="text" value="255, 0, 0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B">
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 flex justify-end">
+                            <button class="remove-feature text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
@@ -70,38 +182,42 @@
         </div>
     </main>
 
+    <!-- Modal de autenticação do Google Drive -->
+    <div id="authModal" class="auth-modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Conectar ao Google Drive</h3>
+                <button id="closeAuthModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="text-gray-600 mb-6">Para acessar seus arquivos no Google Drive, você precisa autorizar o acesso.</p>
+            <div class="flex justify-center">
+                <button id="authenticateBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors">
+                    <i class="fab fa-google mr-2"></i> Autenticar com Google
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const addFeatureBtn = document.getElementById('addFeatureBtn');
-            const featuresContainer = document.getElementById('featuresContainer');
-
-            function rgbToHex(r, g, b) {
-                return "#" + [r, g, b].map(x => {
-                    const hex = x.toString(16);
-                    return hex.length === 1 ? "0" + hex : hex;
-                }).join("");
-            }
-
-            function createFeatureElement() {
-                const feature = document.createElement('div');
-                feature.className = 'feature-item border border-gray-200 rounded-lg p-4';
-                const randomColor = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-                const [r, g, b] = [
-                    parseInt(randomColor.substring(0, 2), 16),
-                    parseInt(randomColor.substring(2, 4), 16),
-                    parseInt(randomColor.substring(4, 6), 16)
-                ];
-                feature.innerHTML = `
+        document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar nova característica
+            document.getElementById('addFeatureBtn').addEventListener('click', function() {
+                const featuresContainer = document.getElementById('featuresContainer');
+                const newFeature = document.createElement('div');
+                newFeature.className = 'feature-item border border-gray-200 rounded-lg p-4';
+                newFeature.innerHTML = `
                     <div class="grid md:grid-cols-12 gap-4 items-center">
                         <div class="md:col-span-5">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Característica</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor dominante">
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor secundária">
                         </div>
                         <div class="md:col-span-5">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Cor RGB</label>
                             <div class="flex items-center">
-                                <input type="color" value="#${randomColor}" class="color-input mr-3">
-                                <input type="text" value="${r}, ${g}, ${b}" class="rgb-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B">
+                                <input type="color" value="#${Math.floor(Math.random()*16777215).toString(16)}" class="mr-3">
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B">
                             </div>
                         </div>
                         <div class="md:col-span-2 flex justify-end">
@@ -111,36 +227,213 @@
                         </div>
                     </div>
                 `;
-
-                feature.querySelector('.remove-feature').addEventListener('click', () => feature.remove());
-
-                const colorInput = feature.querySelector('.color-input');
-                const rgbInput = feature.querySelector('.rgb-input');
-
-                colorInput.addEventListener('input', () => {
+                featuresContainer.appendChild(newFeature);
+                
+                // Atualizar o campo RGB quando a cor muda
+                const colorInput = newFeature.querySelector('input[type="color"]');
+                const rgbInput = newFeature.querySelector('input[type="text"]');
+                
+                colorInput.addEventListener('input', function() {
                     const hex = colorInput.value;
                     const r = parseInt(hex.substr(1, 2), 16);
                     const g = parseInt(hex.substr(3, 2), 16);
                     const b = parseInt(hex.substr(5, 2), 16);
                     rgbInput.value = `${r}, ${g}, ${b}`;
                 });
-
-                rgbInput.addEventListener('change', () => {
-                    const rgb = rgbInput.value.split(',').map(v => parseInt(v.trim()));
-                    if (rgb.length === 3 && rgb.every(n => !isNaN(n) && n >= 0 && n <= 255)) {
-                        colorInput.value = rgbToHex(...rgb);
+                
+                // Converter de RGB para hex quando o campo RGB é editado
+                rgbInput.addEventListener('change', function() {
+                    const rgbArray = rgbInput.value.split(',').map(num => parseInt(num.trim()));
+                    if (rgbArray.length === 3 && rgbArray.every(num => !isNaN(num) && num >= 0 && num <= 255)) {
+                        const hex = `#${rgbArray.map(num => {
+                            const hex = num.toString(16);
+                            return hex.length === 1 ? '0' + hex : hex;
+                        }).join('')}`;
+                        colorInput.value = hex;
                     }
                 });
-
-                return feature;
-            }
-
-            addFeatureBtn.addEventListener('click', () => {
-                featuresContainer.appendChild(createFeatureElement());
+                
+                // Remover característica
+                newFeature.querySelector('.remove-feature').addEventListener('click', function() {
+                    if (document.querySelectorAll('.feature-item').length > 1) {
+                        featuresContainer.removeChild(newFeature);
+                    } else {
+                        alert('Você precisa ter pelo menos uma característica!');
+                    }
+                });
+            });
+            
+            // Ativar a primeira característica
+            const firstColorInput = document.querySelector('input[type="color"]');
+            const firstRgbInput = document.querySelector('input[type="text"]');
+            
+            firstColorInput.addEventListener('input', function() {
+                const hex = firstColorInput.value;
+                const r = parseInt(hex.substr(1, 2), 16);
+                const g = parseInt(hex.substr(3, 2), 16);
+                const b = parseInt(hex.substr(5, 2), 16);
+                firstRgbInput.value = `${r}, ${g}, ${b}`;
+            });
+            
+            // Remover característica padrão se existir botão de remoção
+            document.querySelector('.remove-feature')?.addEventListener('click', function() {
+                if (document.querySelectorAll('.feature-item').length > 1) {
+                    this.closest('.feature-item').remove();
+                } else {
+                    alert('Você precisa ter pelo menos uma característica!');
+                }
             });
 
-            // Adiciona um inicial
-            featuresContainer.appendChild(createFeatureElement());
+            // Upload de arquivos - Drag and Drop
+            const dropzone = document.getElementById('fileDropzone');
+            const fileInput = document.getElementById('fileInput');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+            // Eventos para drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropzone.classList.add('active');
+            }
+
+            function unhighlight() {
+                dropzone.classList.remove('active');
+            }
+
+            dropzone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length === 0) return;
+                
+                // Limpar mensagem padrão se existir
+                if (imagePreviewContainer.querySelector('div > p')) {
+                    imagePreviewContainer.innerHTML = '';
+                }
+                
+                Array.from(files).forEach(file => {
+                    if (!file.type.match('image.*')) return;
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'relative group';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'preview-image';
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+                        removeBtn.innerHTML = '<i class="fas fa-times text-xs"></i>';
+                        removeBtn.addEventListener('click', function() {
+                            imgContainer.remove();
+                            if (imagePreviewContainer.children.length === 0) {
+                                imagePreviewContainer.innerHTML = `
+                                    <div class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                                        <p>Nenhuma imagem selecionada</p>
+                                    </div>
+                                `;
+                            }
+                        });
+                        
+                        imgContainer.appendChild(img);
+                        imgContainer.appendChild(removeBtn);
+                        imagePreviewContainer.appendChild(imgContainer);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Google Drive integration
+            const connectDriveBtn = document.getElementById('connectDriveBtn');
+            const authModal = document.getElementById('authModal');
+            const closeAuthModal = document.getElementById('closeAuthModal');
+            const authenticateBtn = document.getElementById('authenticateBtn');
+
+            connectDriveBtn.addEventListener('click', function() {
+                authModal.classList.add('active');
+            });
+
+            closeAuthModal.addEventListener('click', function() {
+                authModal.classList.remove('active');
+            });
+
+            authenticateBtn.addEventListener('click', function() {
+                // Simulação de autenticação com Google Drive
+                // Em uma aplicação real, você usaria a API do Google Drive
+                alert('Autenticação com Google Drive simulada. Em uma aplicação real, isso abriria o fluxo de autenticação OAuth.');
+                
+                // Simular obtenção de imagens do Drive
+                setTimeout(() => {
+                    authModal.classList.remove('active');
+                    
+                    // Limpar mensagem padrão se existir
+                    if (imagePreviewContainer.querySelector('div > p')) {
+                        imagePreviewContainer.innerHTML = '';
+                    }
+                    
+                    // Adicionar imagens de exemplo (simulando imagens do Drive)
+                    const sampleImages = [
+                        'https://via.placeholder.com/150/FF0000/FFFFFF?text=Exemplo+1',
+                        'https://via.placeholder.com/150/00FF00/FFFFFF?text=Exemplo+2',
+                        'https://via.placeholder.com/150/0000FF/FFFFFF?text=Exemplo+3'
+                    ];
+                    
+                    sampleImages.forEach(src => {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'relative group';
+                        
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.className = 'preview-image';
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+                        removeBtn.innerHTML = '<i class="fas fa-times text-xs"></i>';
+                        removeBtn.addEventListener('click', function() {
+                            imgContainer.remove();
+                            if (imagePreviewContainer.children.length === 0) {
+                                imagePreviewContainer.innerHTML = `
+                                    <div class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                                        <p>Nenhuma imagem selecionada</p>
+                                    </div>
+                                `;
+                            }
+                        });
+                        
+                        imgContainer.appendChild(img);
+                        imgContainer.appendChild(removeBtn);
+                        imagePreviewContainer.appendChild(imgContainer);
+                    });
+                }, 1000);
+            });
         });
     </script>
 </body>
