@@ -57,49 +57,34 @@ def index():
 # Rota para processar os dados do formulário
 @app.route('/processar', methods=['POST'])
 def processar_dados():
-    print("Rota /processar acessada")
     if modelo is None or label_encoder is None:
         return json.dumps({'erro': 'Modelo ou Label Encoder não carregados'}), 500
 
-    neural_type = request.form.get('neuralType')
     imagens = request.files.getlist('images[]')
-    features_json = request.form.get('features')
-    features = json.loads(features_json) if features_json else []
-
     resultados = []
 
     for imagem in imagens:
         if imagem and imagem.filename != '':
             caminho_imagem_temp = os.path.join(app.config['UPLOAD_FOLDER'], imagem.filename)
-            print(f"Tentando salvar imagem em: {caminho_imagem_temp}")
             try:
                 imagem.save(caminho_imagem_temp)
-                print(f"Imagem salva temporariamente em: {caminho_imagem_temp}")
-                if os.path.exists(caminho_imagem_temp):
-                    print(f"Arquivo existe em: {caminho_imagem_temp}")
-                else:
-                    print(f"Arquivo NÃO existe em: {caminho_imagem_temp}")
                 caracteristicas = extrair_caracteristicas(caminho_imagem_temp)
                 if caracteristicas is not None:
                     previsao = modelo.predict(caracteristicas)
                     classe_predita_num = previsao[0]
                     classe_final = label_encoder.inverse_transform([classe_predita_num])[0]
                     resultados.append({'filename': imagem.filename, 'classe': classe_final})
-                    print(f"Resultado para {imagem.filename}: {classe_final}")
                 else:
                     resultados.append({'filename': imagem.filename, 'classe': 'Erro ao processar a imagem'})
-                    print(f"Erro ao processar características de {imagem.filename}")
             except Exception as e:
                 print(f"Erro ao processar a imagem {imagem.filename}: {e}")
                 resultados.append({'filename': imagem.filename, 'classe': f'Erro no processamento: {e}'})
             finally:
                 if os.path.exists(caminho_imagem_temp):
                     os.remove(caminho_imagem_temp)
-                    print(f"Imagem temporária removida: {caminho_imagem_temp}")
         elif imagem.filename == '':
             resultados.append({'filename': 'Arquivo vazio', 'classe': 'Nenhum arquivo selecionado'})
 
-    print(f"Resultados antes do JSON: {resultados}")
     return json.dumps({'resultados': resultados})
 
 # Rota para exibir os resultados
