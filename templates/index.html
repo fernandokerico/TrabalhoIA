@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seletor de Rede Neural</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
@@ -46,394 +49,297 @@
             border-radius: 0.5rem;
             border: 1px solid #e5e7eb;
         }
-        .auth-modal {
-            transition: all 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
-        }
-        .auth-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
     </style>
 </head>
 <body class="font-sans bg-gray-50 min-h-screen">
     <div class="gradient-bg text-white py-12">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Configurador de Rede Neural</h1>
-            <p class="text-lg md:text-xl max-w-2xl mx-auto">Selecione o tipo de rede neural e defina as características para análise</p>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">
+                Configurador de Rede Neural
+            </h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto">
+                Selecione o tipo de rede neural e defina as características para
+                análise
+            </p>
         </div>
     </div>
 
     <main class="container mx-auto px-4 py-12 max-w-4xl">
         <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Selecione o Tipo de Rede Neural</h2>
-            
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">
+                Selecione o Tipo de Rede Neural
+            </h2>
             <div class="grid md:grid-cols-2 gap-6">
-                <!-- Opção 1 -->
                 <div class="feature-card">
-                    <input type="radio" name="neuralType" id="rgbNeural" value="rgb" class="hidden peer" checked>
-                    <label for="rgbNeural" class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all">
+                    <input
+                        type="radio"
+                        name="neuralType"
+                        id="rgbNeural"
+                        value="rgb"
+                        class="hidden peer"
+                        checked
+                    />
+                    <label
+                        for="rgbNeural"
+                        class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all"
+                    >
                         <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4"
+                            >
                                 <i class="fas fa-border-all text-purple-600"></i>
                             </div>
-                            <h3 class="text-xl font-medium text-gray-800">Rede Neural com Extração por Pixel (RGB)</h3>
+                            <h3 class="text-xl font-medium text-gray-800">
+                                Rede Neural com Extração por Pixel (RGB)
+                            </h3>
                         </div>
-                        <p class="text-gray-600">Análise baseada em valores RGB de cada pixel da imagem</p>
+                        <p class="text-gray-600">
+                            Análise baseada em valores RGB de cada pixel da imagem
+                        </p>
                     </label>
                 </div>
-                
-                <!-- Opção 2 -->
+
                 <div class="feature-card">
-                    <input type="radio" name="neuralType" id="cnnNeural" value="cnn" class="hidden peer">
-                    <label for="cnnNeural" class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all">
+                    <input
+                        type="radio"
+                        name="neuralType"
+                        id="cnnNeural"
+                        value="cnn"
+                        class="hidden peer"
+                    />
+                    <label
+                        for="cnnNeural"
+                        class="block p-6 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300 transition-all"
+                    >
                         <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4"
+                            >
                                 <i class="fas fa-project-diagram text-purple-600"></i>
                             </div>
-                            <h3 class="text-xl font-medium text-gray-800">Rede Neural Convolucional (CNN)</h3>
+                            <h3 class="text-xl font-medium text-gray-800">
+                                Rede Neural Convolucional (CNN)
+                            </h3>
                         </div>
-                        <p class="text-gray-600">Análise baseada em características hierárquicas aprendidas automaticamente</p>
+                        <p class="text-gray-600">
+                            Análise baseada em características hierárquicas aprendidas
+                            automaticamente
+                        </p>
                     </label>
                 </div>
             </div>
         </div>
 
-        <!-- Seção de Upload de Imagens -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Adicionar Imagens para Análise</h2>
-            
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">
+                Adicionar Imagens para Análise
+            </h2>
             <div class="grid md:grid-cols-2 gap-6">
-                <!-- Upload do Computador -->
-                <div class="dropzone p-6 rounded-lg text-center" id="fileDropzone">
+                <div
+                    class="dropzone p-6 rounded-lg text-center"
+                    id="fileDropzone"
+                    ondragover="event.preventDefault(); this.classList.add('active')"
+                    ondragleave="this.classList.remove('active')"
+                    ondrop="handleDrop(event)"
+                >
                     <div class="flex flex-col items-center justify-center py-8">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-purple-500 mb-4"></i>
-                        <h3 class="text-lg font-medium text-gray-800 mb-2">Arraste e solte imagens aqui</h3>
+                        <i
+                            class="fas fa-cloud-upload-alt text-4xl text-purple-500 mb-4"
+                        ></i>
+                        <h3 class="text-lg font-medium text-gray-800 mb-2">
+                            Arraste e solte imagens aqui
+                        </h3>
                         <p class="text-gray-500 mb-4">ou</p>
-                        <label for="fileInput" class="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                        <label
+                            for="fileInput"
+                            class="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg inline-flex items-center transition-colors"
+                        >
                             <i class="fas fa-folder-open mr-2"></i> Selecione do computador
                         </label>
-                        <input type="file" id="fileInput" class="hidden" accept="image/*" multiple>
+                        <input
+                            type="file"
+                            id="fileInput"
+                            class="hidden"
+                            accept="image/*"
+                            multiple
+                            onchange="previewImages(this.files)"
+                        />
                     </div>
                 </div>
-                
-                <!-- Conexão com Google Drive -->
+
                 <div class="border-2 border-gray-200 rounded-lg p-6 text-center">
                     <div class="flex flex-col items-center justify-center py-8">
                         <i class="fab fa-google-drive text-4xl text-blue-500 mb-4"></i>
-                        <h3 class="text-lg font-medium text-gray-800 mb-2">Importar do Google Drive</h3>
-                        <button id="connectDriveBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center transition-colors">
+                        <h3 class="text-lg font-medium text-gray-800 mb-2">
+                            Importar do Google Drive
+                        </h3>
+                        <button
+                            id="connectDriveBtn"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center transition-colors"
+                        >
                             <i class="fab fa-google-drive mr-2"></i> Conectar ao Drive
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Pré-visualização das imagens -->
+
             <div class="mt-8">
-                <h3 class="text-lg font-medium text-gray-800 mb-4">Imagens selecionadas</h3>
-                <div id="imagePreviewContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    <div class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <h3 class="text-lg font-medium text-gray-800 mb-4">
+                    Imagens selecionadas
+                </h3>
+                <div
+                    id="imagePreviewContainer"
+                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                >
+                    <div
+                        class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg"
+                        id="noImageText"
+                    >
                         <p>Nenhuma imagem selecionada</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Configuração de características -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800">Configurar Características</h2>
-                <button id="addFeatureBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+                <h2 class="text-2xl font-semibold text-gray-800">
+                    Configurar Características
+                </h2>
+                <button
+                    id="addFeatureBtn"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors"
+                >
                     <i class="fas fa-plus mr-2"></i> Adicionar
                 </button>
             </div>
 
-            <div id="featuresContainer" class="space-y-4">
-                <!-- Características serão adicionadas aqui dinamicamente -->
-                <div class="feature-item border border-gray-200 rounded-lg p-4">
-                    <div class="grid md:grid-cols-12 gap-4 items-center">
-                        <div class="md:col-span-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Característica</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor principal">
-                        </div>
-                        <div class="md:col-span-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Cor RGB</label>
-                            <div class="flex items-center">
-                                <input type="color" value="#ff0000" class="mr-3">
-                                <input type="text" value="255, 0, 0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B">
-                            </div>
-                        </div>
-                        <div class="md:col-span-2 flex justify-end">
-                            <button class="remove-feature text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="featuresContainer" class="space-y-4"></div>
+        </div>
 
-            <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
-                <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-                    Processar Rede Neural
-                </button>
-            </div>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <button
+                id="submitDataBtn"
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-md transition-colors"
+            >
+                Enviar Dados para Análise
+            </button>
         </div>
     </main>
 
-    <!-- Modal de autenticação do Google Drive -->
-    <div id="authModal" class="auth-modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold text-gray-800">Conectar ao Google Drive</h3>
-                <button id="closeAuthModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <p class="text-gray-600 mb-6">Para acessar seus arquivos no Google Drive, você precisa autorizar o acesso.</p>
-            <div class="flex justify-center">
-                <button id="authenticateBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center transition-colors">
-                    <i class="fab fa-google mr-2"></i> Autenticar com Google
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Adicionar nova característica
-            document.getElementById('addFeatureBtn').addEventListener('click', function() {
-                const featuresContainer = document.getElementById('featuresContainer');
-                const newFeature = document.createElement('div');
-                newFeature.className = 'feature-item border border-gray-200 rounded-lg p-4';
-                newFeature.innerHTML = `
-                    <div class="grid md:grid-cols-12 gap-4 items-center">
-                        <div class="md:col-span-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Característica</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor secundária">
-                        </div>
-                        <div class="md:col-span-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Cor RGB</label>
-                            <div class="flex items-center">
-                                <input type="color" value="#${Math.floor(Math.random()*16777215).toString(16)}" class="mr-3">
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B">
-                            </div>
-                        </div>
-                        <div class="md:col-span-2 flex justify-end">
-                            <button class="remove-feature text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
-                                <i class="fas fa-trash"></i>
-                            </button>
+        const dropzone = document.getElementById("fileDropzone");
+        const previewContainer = document.getElementById("imagePreviewContainer");
+        const noImageText = document.getElementById("noImageText");
+        const submitButton = document.getElementById("submitDataBtn");
+
+        function handleDrop(event) {
+            event.preventDefault();
+            dropzone.classList.remove("active");
+            previewImages(event.dataTransfer.files);
+        }
+
+        function previewImages(files) {
+            previewContainer.innerHTML = "";
+            if (files.length > 0) {
+                noImageText.style.display = "none";
+            } else {
+                noImageText.style.display = "block";
+            }
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "preview-image";
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        document.getElementById("addFeatureBtn").addEventListener("click", () => {
+            const container = document.getElementById("featuresContainer");
+            const div = document.createElement("div");
+            div.className = "feature-item border border-gray-200 rounded-lg p-4";
+            div.innerHTML = `
+                <div class="grid md:grid-cols-12 gap-4 items-center">
+                    <div class="md:col-span-5">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Característica</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ex: Cor principal" />
+                    </div>
+                    <div class="md:col-span-5">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cor RGB</label>
+                        <div class="flex items-center">
+                            <input type="color" value="#ff0000" class="mr-3 color-picker" />
+                            <input type="text" value="255, 0, 0" class="rgb-text w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="R, G, B" />
                         </div>
                     </div>
-                `;
-                featuresContainer.appendChild(newFeature);
-                
-                // Atualizar o campo RGB quando a cor muda
-                const colorInput = newFeature.querySelector('input[type="color"]');
-                const rgbInput = newFeature.querySelector('input[type="text"]');
-                
-                colorInput.addEventListener('input', function() {
-                    const hex = colorInput.value;
-                    const r = parseInt(hex.substr(1, 2), 16);
-                    const g = parseInt(hex.substr(3, 2), 16);
-                    const b = parseInt(hex.substr(5, 2), 16);
-                    rgbInput.value = `${r}, ${g}, ${b}`;
-                });
-                
-                // Converter de RGB para hex quando o campo RGB é editado
-                rgbInput.addEventListener('change', function() {
-                    const rgbArray = rgbInput.value.split(',').map(num => parseInt(num.trim()));
-                    if (rgbArray.length === 3 && rgbArray.every(num => !isNaN(num) && num >= 0 && num <= 255)) {
-                        const hex = `#${rgbArray.map(num => {
-                            const hex = num.toString(16);
-                            return hex.length === 1 ? '0' + hex : hex;
-                        }).join('')}`;
-                        colorInput.value = hex;
-                    }
-                });
-                
-                // Remover característica
-                newFeature.querySelector('.remove-feature').addEventListener('click', function() {
-                    if (document.querySelectorAll('.feature-item').length > 1) {
-                        featuresContainer.removeChild(newFeature);
-                    } else {
-                        alert('Você precisa ter pelo menos uma característica!');
-                    }
-                });
-            });
-            
-            // Ativar a primeira característica
-            const firstColorInput = document.querySelector('input[type="color"]');
-            const firstRgbInput = document.querySelector('input[type="text"]');
-            
-            firstColorInput.addEventListener('input', function() {
-                const hex = firstColorInput.value;
-                const r = parseInt(hex.substr(1, 2), 16);
-                const g = parseInt(hex.substr(3, 2), 16);
-                const b = parseInt(hex.substr(5, 2), 16);
-                firstRgbInput.value = `${r}, ${g}, ${b}`;
-            });
-            
-            // Remover característica padrão se existir botão de remoção
-            document.querySelector('.remove-feature')?.addEventListener('click', function() {
-                if (document.querySelectorAll('.feature-item').length > 1) {
-                    this.closest('.feature-item').remove();
-                } else {
-                    alert('Você precisa ter pelo menos uma característica!');
-                }
+                    <div class="md:col-span-2 text-right">
+                        <button class="removeFeatureBtn text-red-500 hover:text-red-700 focus:outline-none">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+
+            const colorPicker = div.querySelector(".color-picker");
+            const rgbText = div.querySelector(".rgb-text");
+            colorPicker.addEventListener("input", () => {
+                const hex = colorPicker.value;
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                rgbText.value = `${r}, ${g}, ${b}`;
             });
 
-            // Upload de arquivos - Drag and Drop
-            const dropzone = document.getElementById('fileDropzone');
-            const fileInput = document.getElementById('fileInput');
-            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-
-            // Eventos para drag and drop
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, preventDefaults, false);
+            const removeButton = div.querySelector(".removeFeatureBtn");
+            removeButton.addEventListener("click", () => {
+                container.removeChild(div);
             });
+        });
 
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropzone.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight() {
-                dropzone.classList.add('active');
-            }
-
-            function unhighlight() {
-                dropzone.classList.remove('active');
-            }
-
-            dropzone.addEventListener('drop', handleDrop, false);
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                handleFiles(files);
-            }
-
-            fileInput.addEventListener('change', function() {
-                handleFiles(this.files);
-            });
-
-            function handleFiles(files) {
-                if (files.length === 0) return;
-                
-                // Limpar mensagem padrão se existir
-                if (imagePreviewContainer.querySelector('div > p')) {
-                    imagePreviewContainer.innerHTML = '';
-                }
-                
-                Array.from(files).forEach(file => {
-                    if (!file.type.match('image.*')) return;
-                    
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        const imgContainer = document.createElement('div');
-                        imgContainer.className = 'relative group';
-                        
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'preview-image';
-                        
-                        const removeBtn = document.createElement('button');
-                        removeBtn.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
-                        removeBtn.innerHTML = '<i class="fas fa-times text-xs"></i>';
-                        removeBtn.addEventListener('click', function() {
-                            imgContainer.remove();
-                            if (imagePreviewContainer.children.length === 0) {
-                                imagePreviewContainer.innerHTML = `
-                                    <div class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg">
-                                        <p>Nenhuma imagem selecionada</p>
-                                    </div>
-                                `;
-                            }
+        submitButton.addEventListener("click", () => {
+            const neuralType = document.querySelector(
+                'input[name="neuralType"]:checked'
+            ).value;
+            const images = document.getElementById("fileInput").files;
+            const features = [];
+            document
+                .querySelectorAll("#featuresContainer .feature-item")
+                .forEach((item) => {
+                    const nameInput = item.querySelector('input[type="text"]');
+                    const rgbInput = item.querySelector(".rgb-text");
+                    if (nameInput && rgbInput) {
+                        features.push({
+                            name: nameInput.value,
+                            rgb: rgbInput.value.split(",").map((v) => parseInt(v.trim())),
                         });
-                        
-                        imgContainer.appendChild(img);
-                        imgContainer.appendChild(removeBtn);
-                        imagePreviewContainer.appendChild(imgContainer);
-                    };
-                    
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            // Google Drive integration
-            const connectDriveBtn = document.getElementById('connectDriveBtn');
-            const authModal = document.getElementById('authModal');
-            const closeAuthModal = document.getElementById('closeAuthModal');
-            const authenticateBtn = document.getElementById('authenticateBtn');
-
-            connectDriveBtn.addEventListener('click', function() {
-                authModal.classList.add('active');
-            });
-
-            closeAuthModal.addEventListener('click', function() {
-                authModal.classList.remove('active');
-            });
-
-            authenticateBtn.addEventListener('click', function() {
-                // Simulação de autenticação com Google Drive
-                // Em uma aplicação real, você usaria a API do Google Drive
-                alert('Autenticação com Google Drive simulada. Em uma aplicação real, isso abriria o fluxo de autenticação OAuth.');
-                
-                // Simular obtenção de imagens do Drive
-                setTimeout(() => {
-                    authModal.classList.remove('active');
-                    
-                    // Limpar mensagem padrão se existir
-                    if (imagePreviewContainer.querySelector('div > p')) {
-                        imagePreviewContainer.innerHTML = '';
                     }
-                    
-                    // Adicionar imagens de exemplo (simulando imagens do Drive)
-                    const sampleImages = [
-                        'https://via.placeholder.com/150/FF0000/FFFFFF?text=Exemplo+1',
-                        'https://via.placeholder.com/150/00FF00/FFFFFF?text=Exemplo+2',
-                        'https://via.placeholder.com/150/0000FF/FFFFFF?text=Exemplo+3'
-                    ];
-                    
-                    sampleImages.forEach(src => {
-                        const imgContainer = document.createElement('div');
-                        imgContainer.className = 'relative group';
-                        
-                        const img = document.createElement('img');
-                        img.src = src;
-                        img.className = 'preview-image';
-                        
-                        const removeBtn = document.createElement('button');
-                        removeBtn.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
-                        removeBtn.innerHTML = '<i class="fas fa-times text-xs"></i>';
-                        removeBtn.addEventListener('click', function() {
-                            imgContainer.remove();
-                            if (imagePreviewContainer.children.length === 0) {
-                                imagePreviewContainer.innerHTML = `
-                                    <div class="text-center text-gray-500 py-8 border-2 border-dashed border-gray-300 rounded-lg">
-                                        <p>Nenhuma imagem selecionada</p>
-                                    </div>
-                                `;
-                            }
-                        });
-                        
-                        imgContainer.appendChild(img);
-                        imgContainer.appendChild(removeBtn);
-                        imagePreviewContainer.appendChild(imgContainer);
-                    });
-                }, 1000);
-            });
+                });
+
+            const formData = new FormData();
+            formData.append("neuralType", neuralType);
+            for (let i = 0; i < images.length; i++) {
+                formData.append("images[]", images[i]);
+            }
+            formData.append("features", JSON.stringify(features));
+
+            fetch("/processar", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("Sucesso:", data);
+                    localStorage.setItem('analysisResults', JSON.stringify(data)); // Salvar no localStorage
+                    window.location.href = "/resultado"; // Redirecionar
+                })
+                .catch((error) => {
+                    console.error("Erro:", error);
+                    alert("Ocorreu um erro ao enviar os dados.");
+                });
         });
     </script>
 </body>

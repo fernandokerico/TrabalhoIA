@@ -1,66 +1,111 @@
-import openml
-import pandas as pd
-import tensorflow as tf
-from sklearn.preprocessing import LabelEncoder
-from utils.processamento import carregar_imagens, criar_dataframe, salvar_csv
 import os
+import numpy as np
+import pandas as pd
+import joblib  # Para carregar o modelo .pkl
+from PIL import Image
+from flask import Flask, request, render_template
+import json
 
-# Função para carregar o modelo treinado
-def carregar_modelo(modelo_caminho):
-    try:
-        modelo = tf.keras.models.load_model(modelo_caminho)
-        print('Modelo carregado com sucesso!')
-        return modelo
-    except Exception as e:
-        print(f"Erro ao carregar o modelo: {e}")
-        return None
+app = Flask(__name__)
 
-# Função para classificar uma nova imagem
-def classificar_imagem(imagem_path, modelo, label_encoder):
-    caracteristicas = extrair_caracteristicas(imagem_path)
-    caracteristicas = caracteristicas.reshape(1, -1)  # Deixe no formato certo pro modelo
-    previsao = modelo.predict(caracteristicas)
-    classe_predita = np.argmax(previsao)
-    classe_final = label_encoder.inverse_transform([classe_predita])[0]
-    return classe_final
+# Configuração para a pasta de uploads (agora será a raiz)
+UPLOAD_FOLDER = '.'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Caminhos dos arquivos
+MODELO_CAMINHO = 'modelo_personagens.pkl'
+CSV_CAMINHO = 'personagens.csv'
+
+# Carregar o modelo treinado
+try:
+    modelo = joblib.load(MODELO_CAMINHO)
+    print('Modelo carregado com sucesso!')
+except Exception as e:
+    print(f"Erro ao carregar o modelo: {e}")
+    modelo = None
+
+# Carregar o LabelEncoder
+try:
+    dataset = pd.read_csv(CSV_CAMINHO)
+    label_encoder = joblib.load('label_encoder.pkl') # Se você salvou o LabelEncoder separadamente
+    if 'Classe' in dataset.columns:
+        label_encoder.fit(dataset['Classe']) # Garante que o encoder tenha as classes (útil se não salvo separado)
+    print('Label Encoder carregado com sucesso!')
+except FileNotFoundError:
+    label_encoder = None
+    print(f"Erro: Arquivo {CSV_CAMINHO} ou label_encoder.pkl não encontrado.")
+except Exception as e:
+    label_encoder = None
+    print(f"Erro ao carregar o Label Encoder: {e}")
 
 # Função para extrair características (RGB médio) de uma imagem
 def extrair_caracteristicas(imagem_path):
-    from PIL import Image
-    imagem = Image.open(imagem_path).convert('RGB')
-    pixels = np.array(imagem).reshape(-1, 3)  # "Achata" para uma lista de pixels
-    media_rgb = np.mean(pixels, axis=0)  # Calcula a média de R, G e B
-    return media_rgb
+    try:
+        imagem = Image.open(imagem_path).convert('RGB')
+        pixels = np.array(imagem).reshape(-1, 3)  # "Achata" para uma lista de pixels
+        media_rgb = np.mean(pixels, axis=0)  # Calcula a média de R, G e B
+        return media_rgb.reshape(1, -1)  # Retorna no formato esperado pelo modelo
+    except Exception as e:
+        print(f"Erro ao extrair características da imagem: {e}")
+        return None
 
-# Baixar o conjunto de dados do OpenML (CIFAR-10)
-def baixar_dados_openml():
-    dataset = openml.datasets.get_dataset(45104)  # CIFAR-10 Dataset ID
-    X, y, _, _ = dataset.get_data(target=dataset.default_target_attribute)
-    return X, y
+# Rota principal para o formulário
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-# Caminhos dos arquivos
-MODELO_CAMINHO = 'modelo_rgb.h5'
-CSV_CAMINHO = 'dados_imagens.csv'
+# Rota para processar os dados do formulário
+@app.route('/processar', methods=['POST'])
+def processar_dados():
+    print("Rota /processar acessada")
+    if modelo is None or label_encoder is None:
+        return json.dumps({'erro': 'Modelo ou Label Encoder não carregados'}), 500
 
-# Carregar o modelo treinado
-modelo = carregar_modelo(MODELO_CAMINHO)
-if modelo is None:
-    exit()  # Se o modelo não for carregado, o programa deve parar.
+    neural_type = request.form.get('neuralType')
+    imagens = request.files.getlist('images[]')
+    features_json = request.form.get('features')
+    features = json.loads(features_json) if features_json else []
 
-# Recarregar o LabelEncoder
-dataset = pd.read_csv(CSV_CAMINHO)
-label_encoder = LabelEncoder()
-label_encoder.fit(dataset['Classe'])
+    resultados = []
 
-# Baixar dados do OpenML
-X, y = baixar_dados_openml()
-print("Dados do OpenML carregados com sucesso.")
+    for imagem in imagens:
+        if imagem and imagem.filename != '':
+            caminho_imagem_temp = os.path.join(app.config['UPLOAD_FOLDER'], imagem.filename)
+            print(f"Tentando salvar imagem em: {caminho_imagem_temp}")
+            try:
+                imagem.save(caminho_imagem_temp)
+                print(f"Imagem salva temporariamente em: {caminho_imagem_temp}")
+                if os.path.exists(caminho_imagem_temp):
+                    print(f"Arquivo existe em: {caminho_imagem_temp}")
+                else:
+                    print(f"Arquivo NÃO existe em: {caminho_imagem_temp}")
+                caracteristicas = extrair_caracteristicas(caminho_imagem_temp)
+                if caracteristicas is not None:
+                    previsao = modelo.predict(caracteristicas)
+                    classe_predita_num = previsao[0]
+                    classe_final = label_encoder.inverse_transform([classe_predita_num])[0]
+                    resultados.append({'filename': imagem.filename, 'classe': classe_final})
+                    print(f"Resultado para {imagem.filename}: {classe_final}")
+                else:
+                    resultados.append({'filename': imagem.filename, 'classe': 'Erro ao processar a imagem'})
+                    print(f"Erro ao processar características de {imagem.filename}")
+            except Exception as e:
+                print(f"Erro ao processar a imagem {imagem.filename}: {e}")
+                resultados.append({'filename': imagem.filename, 'classe': f'Erro no processamento: {e}'})
+            finally:
+                if os.path.exists(caminho_imagem_temp):
+                    os.remove(caminho_imagem_temp)
+                    print(f"Imagem temporária removida: {caminho_imagem_temp}")
+        elif imagem.filename == '':
+            resultados.append({'filename': 'Arquivo vazio', 'classe': 'Nenhum arquivo selecionado'})
 
-# Classificar uma nova imagem (exemplo de uso)
-imagem_nova = input('Digite o caminho da nova imagem para classificar: ')
-if not os.path.exists(imagem_nova):
-    print('Arquivo de imagem não encontrado. Verifique o caminho informado.')
-    exit()
+    print(f"Resultados antes do JSON: {resultados}")
+    return json.dumps({'resultados': resultados})
 
-classe_final = classificar_imagem(imagem_nova, modelo, label_encoder)
-print(f'A imagem foi classificada como: {classe_final}')
+# Rota para exibir os resultados
+@app.route('/resultado')
+def resultado():
+    return render_template('resultado.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
