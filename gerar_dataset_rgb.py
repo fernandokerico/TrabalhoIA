@@ -11,21 +11,21 @@ dados = []
 # Percorre cada subpasta (cada personagem)
 for personagem in os.listdir(data_dir):
     personagem_path = os.path.join(data_dir, personagem)
-    
+
     # Verifica se é uma pasta
     if os.path.isdir(personagem_path):
         # Percorre cada imagem da pasta
         for imagem_nome in os.listdir(personagem_path):
             imagem_path = os.path.join(personagem_path, imagem_nome)
-            
+
             # Lê a imagem
             imagem = cv2.imread(imagem_path)
-            
+
             if imagem is not None:
                 # Calcula a média dos valores de cor (em ordem BGR)
-                media_cor = imagem.mean(axis=(0, 1))  # média para cada canal (B, G, R)
+                media_cor = imagem.mean(axis=(0, 1))   # média para cada canal (B, G, R)
                 B, G, R = media_cor
-                
+
                 # Salva os dados (invertendo para R, G, B)
                 dados.append({
                     'R': int(R),

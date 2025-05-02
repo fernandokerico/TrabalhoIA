@@ -1,34 +1,50 @@
 import pandas as pd
-import tensorflow as tf
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import to_categorical
 
-# Carrega CSV
-dados = pd.read_csv('dataset_rgb.csv')
+# Carrega o dataset
+df = pd.read_csv('dataset_rgb.csv')
 
-# Separa dados e rótulos
-X = dados[['R', 'G', 'B']].values
-y = dados['classe'].values
+# Separa features (RGB) e target (classe)
+X = df[['R', 'G', 'B']].values
+y = df['classe'].values
 
-# Codifica as classes para 0, 1, ...
+# Encode as classes para valores numéricos
 label_encoder = LabelEncoder()
-y = label_encoder.fit_transform(y)
+y_encoded = label_encoder.fit_transform(y)
+y_categorical = to_categorical(y_encoded)
+np.save('classes.npy', label_encoder.classes_) # Salva os nomes das classes
 
-# Divide treino/teste
-X_treino, X_teste, y_treino, y_teste = train_test_split(X, y, test_size=0.2)
+# Divide os dados em treinamento e teste
+X_train, X_test, y_train_categorical, y_test_categorical = train_test_split(X, y_categorical, test_size=0.2, random_state=42)
 
-# Modelo MLP simples
-modelo = tf.keras.models.Sequential()
-modelo.add(tf.keras.layers.Dense(units=8, activation='relu', input_shape=(3,)))
-modelo.add(tf.keras.layers.Dense(units=6, activation='relu'))
-modelo.add(tf.keras.layers.Dense(units=4, activation='relu'))
-modelo.add(tf.keras.layers.Dense(units=len(set(y)), activation='softmax'))
+# Define o modelo da rede neural
+model = Sequential([
+    Dense(128, activation='relu', input_shape=(3,)),
+    Dropout(0.5),
+    Dense(64, activation='relu'),
+    Dropout(0.5),
+    Dense(y_categorical.shape[1], activation='softmax') # Número de neurônios na saída = número de classes
+])
 
-modelo.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-modelo.summary()
+# Compila o modelo
+model.compile(optimizer=Adam(learning_rate=0.001),
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
 
-modelo.fit(X_treino, y_treino, epochs=100, validation_split=0.1)
+# Treina o modelo
+history = model.fit(X_train, y_train_categorical, epochs=50, batch_size=32, validation_data=(X_test, y_test_categorical))
 
-# Avaliação
-loss, acc = modelo.evaluate(X_teste, y_teste)
-print(f"Acurácia: {acc:.2f}")
+# Avalia o modelo
+loss, accuracy = model.evaluate(X_test, y_test_categorical, verbose=0)
+print(f'Acurácia do modelo nos dados de teste: {accuracy*100:.2f}%')
+
+# Salva o modelo treinado
+model.save('modelo_personagens.h5')
+
+print("Modelo treinado e salvo como 'modelo_personagens.h5'.")
