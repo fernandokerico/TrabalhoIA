@@ -111,10 +111,10 @@ function addColorRange(classIndex) {
                 </div>
             </div>
             <div class="md:col-span-2 text-right">
-                <button type="button" class="removeFeatureBtn text-red-500 hover:text-red-700 focus:outline-none" onclick="removeColorRange(this)">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </div>
+                        <button type="button" class="removeFeatureBtn text-red-500 hover:text-red-700 focus:outline-none" onclick="removeColorRange(this)">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
             <div class="md:col-span-12 mt-2">
                 <label for="tolerance-${classIndex}-${rangeIndex}" class="block text-sm font-medium text-gray-700 mb-1">Tolerância:</label>
                 <input type="number" id="tolerance-${classIndex}-${rangeIndex}" class="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md" value="10" min="0">
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const file = files[i];
                 const reader = new FileReader();
 
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const imgDiv = document.createElement('div');
                     imgDiv.className = 'relative';
 
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const removeButton = document.createElement('button');
                     removeButton.innerHTML = '<i class="fas fa-times-circle text-red-500 hover:text-red-700 absolute top-1 right-1 bg-white rounded-full p-1"></i>';
                     removeButton.className = 'absolute top-0 right-0 focus:outline-none cursor-pointer';
-                    removeButton.addEventListener('click', function() {
+                    removeButton.addEventListener('click', function () {
                         imgDiv.remove();
                         // Adicione aqui a lógica para remover o arquivo da lista de arquivos a serem enviados, se necessário
                     });
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     previewContainer.appendChild(imgDiv);
                 }
-                reader.onerror = function() {
+                reader.onerror = function () {
                     console.error("Erro ao ler o arquivo:", file.name);
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'text-red-500 text-sm italic';
@@ -259,13 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (fileInput) {
-        fileInput.addEventListener('change', function() {
+        fileInput.addEventListener('change', function () {
             previewImages(this.files);
         });
     }
 
     if (dropzone) {
-        dropzone.addEventListener('drop', function(event) {
+        dropzone.addEventListener('drop', function (event) {
             event.preventDefault();
             this.classList.remove('active');
             previewImages(event.dataTransfer.files);
@@ -292,16 +292,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: "POST",
                 body: formData,
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Resultado da classificação:", data);
-                localStorage.setItem('analysisResults', JSON.stringify(data));
-                window.location.href = "/resultado";
-            })
-            .catch(error => {
-                console.error("Erro na classificação:", error);
-                alert("Ocorreu um erro ao classificar a imagem.");
-            });
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Resultado da classificação:", data);
+                    localStorage.setItem('analysisResults', JSON.stringify(data));
+                    window.location.href = "/resultado";
+                })
+                .catch(error => {
+                    console.error("Erro na classificação:", error);
+                    alert("Ocorreu um erro ao classificar a imagem.");
+                });
         });
     }
 
@@ -318,21 +318,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Por enquanto, vamos enviar uma requisição vazia.
                 body: JSON.stringify({ /* Aqui você pode adicionar dados se necessário */ })
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Resposta do treinamento:', data);
-                if (data.message) {
-                    trainingStatus.textContent = data.message;
-                } else if (data.error) {
-                    trainingStatus.textContent = `Erro no treinamento: ${data.error}`;
-                } else {
-                    trainingStatus.textContent = 'Treinamento concluído (verifique o console para detalhes).';
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao iniciar o treinamento:', error);
-                trainingStatus.textContent = 'Erro ao iniciar o treinamento.';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Resposta do treinamento:', data);
+                    if (data.message) {
+                        trainingStatus.textContent = data.message;
+                    } else if (data.error) {
+                        trainingStatus.textContent = `Erro no treinamento: ${data.error}`;
+                    } else {
+                        trainingStatus.textContent = 'Treinamento concluído (verifique o console para detalhes).';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao iniciar o treinamento:', error);
+                    trainingStatus.textContent = 'Erro ao iniciar o treinamento.';
+                });
         });
     }
 });
