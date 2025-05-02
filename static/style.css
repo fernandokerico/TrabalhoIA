@@ -1,16 +1,18 @@
+/* static/style.css */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 .gradient-bg {
     background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
 }
-
 .feature-card {
     transition: all 0.3s ease;
 }
-
 .feature-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
-
 input[type="color"] {
     -webkit-appearance: none;
     border: none;
@@ -18,12 +20,79 @@ input[type="color"] {
     height: 30px;
     cursor: pointer;
 }
-
 input[type="color"]::-webkit-color-swatch-wrapper {
     padding: 0;
 }
-
 input[type="color"]::-webkit-color-swatch {
     border: 2px solid #e5e7eb;
     border-radius: 50%;
+}
+.dropzone {
+    border: 2px dashed #cbd5e0;
+    transition: all 0.3s ease;
+}
+.dropzone.active {
+    border-color: #8b5cf6;
+    background-color: #f5f3ff;
+}
+.preview-image {
+    object-fit: cover;
+    height: 100px;
+    width: 100px;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+#rgbTrainConfig {
+    position: relative;
+    padding: 1.5rem; /* Adiciona um pouco de espaço interno para o botão "X" não ficar colado na borda */
+}
+
+#closeTrainingBtn {
+    padding: 0.5rem;
+    font-size: 1rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10; /* Garante que o botão "X" fique acima de outros elementos dentro da div */
+}
+
+#closeTrainingBtn i {
+    font-size: 1.2rem;
+}
+
+.class-config {
+    position: relative; /* Garante que o botão "X" dentro de cada configuração de classe funcione corretamente */
+}
+
+.class-config .absolute.top-2.right-2 {
+    padding: 0.25rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.class-config .absolute.top-2.right-2 i {
+    font-size: 1rem;
+}
+
+.feature-item {
+    margin-bottom: 1rem; /* Adiciona um pouco de espaço entre os itens de cor */
+    padding: 0.75rem;
+    border: 1px solid #f3f4f6;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;
+}
+
+.removeFeatureBtn {
+    padding: 0.25rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
